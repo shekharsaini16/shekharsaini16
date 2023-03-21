@@ -12,3 +12,8 @@ top_rated_movies['gross_in_millions'] = (top_rated_movies['gross'] / 1000000).ap
 
 # Print the first 5 rows of the new dataframe
 print(top_rated_movies.head())
+
+
+top_rated_movies.loc[:, 'budget_in_millions'] = (top_rated_movies['budget'] / 1000000).apply(lambda x: round(x, 3))
+top_rated_movies.loc[:, 'gross_in_millions'] = (top_rated_movies['gross'] / 1000000).apply(lambda x: round(x, 3))
+
