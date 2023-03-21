@@ -32,4 +32,39 @@ df_sorted = df.sort_values('profit', ascending=False)
 top_10_profit_movies = df_sorted.head(10)
 
 # Display all details for these movies
-print(top_10_profit_movies)
+print(top_10_profit_movies
+
+
+
+import pandas as pd
+import matplotlib.pyplot as plt
+
+# Read the Excel file into a pandas dataframe
+df = pd.read_excel('your_file_name.xlsx')
+
+# Filter the dataframe to include only top-rated movies with an IMDb rating of 8 or higher
+top_rated_movies = df[df['IMDb_rating'] >= 8]
+
+# Group the dataframe by country and count the number of movies in each group
+movies_by_country = top_rated_movies.groupby('country')['title'].count()
+
+# Sort the countries by the number of movies in descending order
+movies_by_country_sorted = movies_by_country.sort_values(ascending=False)
+
+# Create a bar plot of the number of movies produced by each country
+movies_by_country_sorted.plot(kind='bar')
+
+# Set the plot title and axis labels
+plt.title('Number of Top-rated Movies by Country')
+plt.xlabel('Country')
+plt.ylabel('Number of Movies')
+
+# Find the country that produced the most top-rated movies
+most_movies_country = movies_by_country_sorted.index[0]
+most_movies_count = movies_by_country_sorted[0]
+
+# Print the country that produced the most top-rated movies
+print(f'The country that produced the most top-rated movies is {most_movies_country} with {most_movies_count} movies.')
+
+
+
