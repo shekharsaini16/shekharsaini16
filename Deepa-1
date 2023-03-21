@@ -1,0 +1,14 @@
+import pandas as pd
+
+# Read the Excel file into a pandas dataframe
+df = pd.read_excel('your_file_name.xlsx')
+
+# Filter the dataframe to include only top-rated movies with an IMDb rating of 8 or higher
+top_rated_movies = df[df['IMDb_rating'] >= 8]
+
+# Convert the 'budget' and 'gross' columns to millions and round to 3 decimal places
+top_rated_movies['budget_in_millions'] = (top_rated_movies['budget'] / 1000000).apply(lambda x: round(x, 3))
+top_rated_movies['gross_in_millions'] = (top_rated_movies['gross'] / 1000000).apply(lambda x: round(x, 3))
+
+# Print the first 5 rows of the new dataframe
+print(top_rated_movies.head())
