@@ -17,3 +17,19 @@ print(top_rated_movies.head())
 top_rated_movies.loc[:, 'budget_in_millions'] = (top_rated_movies['budget'] / 1000000).apply(lambda x: round(x, 3))
 top_rated_movies.loc[:, 'gross_in_millions'] = (top_rated_movies['gross'] / 1000000).apply(lambda x: round(x, 3))
 
+import pandas as pd
+
+# Read the Excel file into a pandas dataframe
+df = pd.read_excel('your_file_name.xlsx')
+
+# Calculate profit for each movie
+df['profit'] = df['gross'] - df['budget']
+
+# Sort the dataframe by profit in descending order
+df_sorted = df.sort_values('profit', ascending=False)
+
+# Select the top 10 movies with the highest profit
+top_10_profit_movies = df_sorted.head(10)
+
+# Display all details for these movies
+print(top_10_profit_movies)
