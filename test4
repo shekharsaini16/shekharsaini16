@@ -71,3 +71,11 @@ def index():
         return render_template('index.html', result=result)
     else:
         return render_template('index.html')
+As a user, I should be able to provide a CSV file and have a table with data created as a result.  User will need to provide SCHEMA, TABLE_NAME, FILE_NAME and FILE_FORMAT (CSV, JSON, PIPE DELIMITED, AVRO, ETC..)
+
+As a user, I should be able to provide SQL code or a TABLE_NAME and have an export produced in a specified FILE_FORMAT (CSV, JSON, PIPE DELIMITED, AVRO, ETC..)
+
+Customer would like to upload a CSV file to snowflake.
+
+Customer would like to export a CSV file from snowflake based on provided query.
+
