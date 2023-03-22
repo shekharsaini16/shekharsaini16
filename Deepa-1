@@ -34,6 +34,14 @@ top_10_profit_movies = df_sorted.head(10)
 # Display all details for these movies
 print(top_10_profit_movies
 
+As a user, I should be able to select a CSV or pipe delimited file basis on the parameter like path, type, file name, schema name, environment, table name  and the data in the file should be loaded into the table name passed in the schema passed in the env as per the variables.
+
+ FILE_FORMAT example -  (CSV, JSON, PIPE DELIMITED, AVRO, ETC..)
+
+
+
+It should be a standalone utility which can be executed in any OS.
+
 
 
 import pandas as pd
