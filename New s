@@ -1,7 +1,8 @@
-import cv2
+import numpy as np
+import tensorflow as tf
 
 # Load the pre-trained gesture recognition model
-model = cv2.dnn.readNetFromTensorflow('gesture_model.pb')
+model = tf.keras.models.load_model('gesture_model.h5')
 
 # Define a dictionary of gestures and their corresponding meanings
 gesture_dict = {
@@ -23,14 +24,14 @@ while True:
     # ...
 
     # Use the pre-trained model to detect the gesture in the frame
-    # ...
-    
+    gesture_probabilities = model.predict(np.array([frame]))
+    gesture_index = np.argmax(gesture_probabilities)
+
     # Lookup the gesture in the dictionary and generate the corresponding text
     gesture_text = gesture_dict[gesture_index]
 
     # Display the gesture and its corresponding text on the screen
-    cv2.putText(frame, gesture_text, (10, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
-    cv2.imshow('Gesture Recognition', frame)
+    # ...
 
     # Exit the loop if the 'q' key is pressed
     if cv2.waitKey(1) & 0xFF == ord('q'):
