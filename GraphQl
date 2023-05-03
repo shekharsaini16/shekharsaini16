@@ -1,0 +1,12 @@
+Sure, here are ten basic points about GraphQL that you can use to present to your team:
+
+1. GraphQL is a query language for APIs that was developed by Facebook in 2012 and made open source in 2015.
+2. It allows clients to request exactly what they need and nothing more, making it more efficient and reducing over-fetching.
+3. With GraphQL, clients can query multiple resources in a single request, reducing the number of API requests needed to fetch data.
+4. GraphQL is strongly typed, meaning that the schema defines the types of data that can be queried and returned.
+5. It has a powerful type system that allows for easy evolution of APIs and ensures that clients always receive the correct data format.
+6. GraphQL enables front-end developers to work more independently from back-end developers, as they can specify their own data requirements.
+7. It is not tied to any specific database or storage engine, and can be used with a variety of programming languages and frameworks.
+8. GraphQL provides a single endpoint for all queries and mutations, making it easy to test and monitor.
+9. It is often used in conjunction with client-side frameworks such as React, Vue, or Angular to create modern web applications.
+10. GraphQL is becoming increasingly popular among developers, with major companies such as GitHub, Shopify, and Airbnb adopting it for their APIs.
