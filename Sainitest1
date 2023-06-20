@@ -4,3 +4,156 @@ def build_query(identifiers):
         for identifier in identifiers
     ]))
     return query
+=======
+def build_query(identifiers):
+    query = "or:[{}]".format(", ".join([
+        '{{sourceIndividual_alternateIdentifiers_mbiNumbers_identifier:"{0}",sourceIndividual_personName_firstName:"{1}",sourceIndividual_personName_lastName:"{2}"}}'.format(identifier[0],identifier[1],identifier[2])
+        for identifier in identifiers
+    ]))
+    return query
+
+for i, mbis_batch in enumerate(mbis_batches):
+    start_time = datetime.datetime.now()
+    
+    
+    identifiers_query = build_query(mbis_batch)
+    query = gql('''
+        query {
+            eligibilities(
+                query: {
+                    where: {
+                        and: [
+                            {
+                                active: {_eq: true}
+                            },
+                            {
+                                %s
+                            }
+                        ]
+                    },
+                    # limit: { page: 1, pageSize: 100 }
+                }
+            ) {
+                memberships {
+                    effectiveDate
+                    terminationDate
+                }
+                sourceIndividual {
+                    sourceSystemCode
+                    individualIdentifier
+                    employment {
+                        employeeIdentifier
+                    }
+                    alternateIdentifiers {
+                        subscriberIds {
+                            identifier
+                            active
+                        }
+                        mbiNumbers {
+                            active
+                            identifier
+                        }
+                    }
+                    personName {
+                        lastName
+                        firstName
+                    }
+                    telephoneNumbers {
+                        telephoneNumber
+                    }
+                    postalAddresses {
+                        postalCode
+                        longitude
+                        latitude
+                        addressType {
+                            code
+                            description
+                        }
+                        sourceSystemAttributes {
+                            cdb{
+                                addressTypeCode
+                            }
+                        }
+                    }
+                    electronicAddresses {
+                        electronicAddress
+                    }
+                    demographicInfo {
+                        birthDate
+                        genderType {
+                            description
+                        }
+                    }
+                }
+            }
+        }
+    ''' % identifiers_query)
+
+    # Execute the query and process the response
+    response = client.execute(query)
+    
+    end_time = datetime.datetime.now()  # Add end time
+    time_diff = end_time - start_time  # Calculate time difference
+    print(f"Start time: {start_time}. End time: {end_time}. Time taken: {time_diff}")  # Print times and time difference
+
+    # Write the JSON response to file
+    with open(os.path.join(output_dir, f"response_{i}.json"), 'w') as f:
+        json.dump(response, f)
+
+=====
+---------------------------------------------------------------------------
+TransportQueryError                       Traceback (most recent call last)
+Cell In[41], line 86
+     13 query = gql('''
+     14     query {
+     15         eligibilities(
+   (...)
+     82     }
+     83 ''' % identifiers_query)
+     85 # Execute the query and process the response
+---> 86 response = client.execute(query)
+     88 end_time = datetime.datetime.now()  # Add end time
+     89 time_diff = end_time - start_time  # Calculate time difference
+
+File ~\AppData\Local\anaconda3\lib\site-packages\gql\client.py:403, in Client.execute(self, document, variable_values, operation_name, serialize_variables, parse_result, get_execution_result, **kwargs)
+    400     return data
+    402 else:  # Sync transports
+--> 403     return self.execute_sync(
+    404         document,
+    405         variable_values=variable_values,
+    406         operation_name=operation_name,
+    407         serialize_variables=serialize_variables,
+    408         parse_result=parse_result,
+    409         get_execution_result=get_execution_result,
+    410         **kwargs,
+    411     )
+
+File ~\AppData\Local\anaconda3\lib\site-packages\gql\client.py:221, in Client.execute_sync(self, document, variable_values, operation_name, serialize_variables, parse_result, get_execution_result, **kwargs)
+    219 """:meta private:"""
+    220 with self as session:
+--> 221     return session.execute(
+    222         document,
+    223         variable_values=variable_values,
+    224         operation_name=operation_name,
+    225         serialize_variables=serialize_variables,
+    226         parse_result=parse_result,
+    227         get_execution_result=get_execution_result,
+    228         **kwargs,
+    229     )
+
+File ~\AppData\Local\anaconda3\lib\site-packages\gql\client.py:860, in SyncClientSession.execute(self, document, variable_values, operation_name, serialize_variables, parse_result, get_execution_result, **kwargs)
+    858 # Raise an error if an error is returned in the ExecutionResult object
+    859 if result.errors:
+--> 860     raise TransportQueryError(
+    861         str(result.errors[0]),
+    862         errors=result.errors,
+    863         data=result.data,
+    864         extensions=result.extensions,
+    865     )
+    867 assert (
+    868     result.data is not None
+    869 ), "Transport returned an ExecutionResult without data or errors"
+    871 if get_execution_result:
+
+TransportQueryError: Expected value of type "EligibilityStringOperatorClause", found "5KR8DE6XP33".
+
