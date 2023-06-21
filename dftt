@@ -1,0 +1,93 @@
+# Assuming you have retrieved the values from another table and stored them in lists
+mbi_identifiers = ["SD344DDFR", "AB123XYZ", "CD456ABC"]
+first_names = ["John", "Jane", "Michael"]
+last_names = ["Doe", "Smith", "Johnson"]
+
+# Build the query conditions for each mbi_identifier, first_name, and last_name value
+mbi_conditions = " ".join([
+    '{{sourceIndividual_alternateIdentifiers_mbiNumbers_identifier:{{_eq: "{}"}}}}'.format(identifier)
+    for identifier in mbi_identifiers
+])
+
+fname_conditions = " ".join([
+    '{{sourceIndividual_personName_firstName:{{_iEq: "{}"}}}}'.format(fname)
+    for fname in first_names
+])
+
+lname_conditions = " ".join([
+    '{{sourceIndividual_personName_lastName:{{_iEq: "{}"}}}}'.format(lname)
+    for lname in last_names
+])
+
+# Build the query string with the dynamically obtained values
+query = gql('''
+    query {
+        eligibilities(
+            query: {
+                where: {
+                    and: [
+                        {
+                            active: {_eq: true}
+                        }
+                        {}
+                        {}
+                        {}
+                    ]
+                }
+                # limit: { page: 1, pageSize: 100 }
+            }
+        ) {
+            memberships {
+                effectiveDate
+                terminationDate
+            }
+            sourceIndividual {
+                sourceSystemCode
+                individualIdentifier
+                employment {
+                    employeeIdentifier
+                }
+                alternateIdentifiers {
+                    subscriberIds {
+                        identifier
+                        active
+                    }
+                    mbiNumbers {
+                        active
+                        identifier
+                    }
+                }
+                personName {
+                    lastName
+                    firstName
+                }
+                telephoneNumbers {
+                    telephoneNumber
+                }
+                postalAddresses {
+                    postalCode
+                    longitude
+                    latitude
+                    addressType {
+                        code
+                        description
+                    }
+                    sourceSystemAttributes {
+                        cdb{
+                            addressTypeCode
+                        }
+                    }
+                }
+                electronicAddresses {
+                    electronicAddress
+                }
+                demographicInfo {
+                    birthDate
+                    genderType {
+                        description
+                    }
+                }
+            }
+        }
+    }
+''' % (mbi_conditions, fname_conditions, lname_conditions))
