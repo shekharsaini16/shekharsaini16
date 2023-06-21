@@ -1,0 +1,86 @@
+# Assuming you have retrieved the combinations from another table and stored them as a list of tuples
+combinations = [("SD344DDFR", "John", "Doe"), ("AB123XYZ", "Jane", "Smith"), ("CD456ABC", "Michael", "Johnson")]
+
+# Create a list to store the responses
+all_responses = []
+
+# Iterate over the combinations and make separate API requests for each combination
+for mbi_identifier, first_name, last_name in combinations:
+    # Build the query string with the current combination
+    query = gql('''
+        query ($mbi_identifier: String!, $first_name: String!, $last_name: String!) {
+            eligibilities(
+                query: {
+                    where: {
+                        and: [
+                            {
+                                active: {_eq: true}
+                            }
+                            {sourceIndividual_alternateIdentifiers_mbiNumbers_identifier:{_eq: $mbi_identifier}}
+                            {sourceIndividual_personName_firstName:{_iEq: $first_name}}
+                            {sourceIndividual_personName_lastName:{_iEq: $last_name}}
+                        ]
+                    }
+                    # limit: { page: 1, pageSize: 100 }
+                }
+            ) {
+                memberships {
+                    effectiveDate
+                    terminationDate
+                }
+                sourceIndividual {
+                    sourceSystemCode
+                    individualIdentifier
+                    employment {
+                        employeeIdentifier
+                    }
+                    alternateIdentifiers {
+                        subscriberIds {
+                            identifier
+                            active
+                        }
+                        mbiNumbers {
+                            active
+                            identifier
+                        }
+                    }
+                    personName {
+                        lastName
+                        firstName
+                    }
+                    telephoneNumbers {
+                        telephoneNumber
+                    }
+                    postalAddresses {
+                        postalCode
+                        longitude
+                        latitude
+                        addressType {
+                            code
+                            description
+                        }
+                        sourceSystemAttributes {
+                            cdb{
+                                addressTypeCode
+                            }
+                        }
+                    }
+                    electronicAddresses {
+                        electronicAddress
+                    }
+                    demographicInfo {
+                        birthDate
+                        genderType {
+                            description
+                        }
+                    }
+                }
+            }
+        }
+    ''')
+    
+    # Execute the API request with the current query and variables
+    response = client.execute(query, variables={"mbi_identifier": mbi_identifier, "first_name": first_name, "last_name": last_name})
+    
+    # Append the response to the list
+    all_responses.append(response)
